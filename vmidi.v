@@ -33,7 +33,9 @@ pub fn parse(filename string) ?Midi {
 	for i, b in file {
 		file_bytes[i] = byte(b)
 	}
-	mut midi := read_chunks(file_bytes)
+	mut midi := read_chunks(file_bytes) or {
+		return none
+	}
 	midi.time_division()
 	for i in 0..midi.tracks.len {
 		midi.tracks[i].nb = i

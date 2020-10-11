@@ -48,12 +48,17 @@ pub:
 	msb	byte
 }
 
-fn read_midi_event(file []byte, mut index_track &int, delta_time u64) TrkData {
+fn read_midi_event(file []byte, mut index_track &int, delta_time u64, mut last_status &byte) ?TrkData {
 	mut index := (*index_track)
+	use_curr_status := byte(file[index] & 0xf0) >> 4 >= 0x08
+	status_byte := if use_curr_status { file[index] } else { *last_status }
 
-	event_type := byte(file[index] & 0xf0) >> 4
-	midi_channel := byte(file[index] & 0x0f)
-	index++
+	event_type := byte(status_byte & 0xf0) >> 4
+	midi_channel := byte(status_byte & 0x0f)
+	if use_curr_status {
+		(*last_status) = file[index]
+		index++
+	}
 	mut event := TrkData{}
 	match event_type {
 		0x08 {
@@ -112,7 +117,7 @@ fn read_midi_event(file []byte, mut index_track &int, delta_time u64) TrkData {
 		}
 		else {
 			println('UNKNOWN EVENT: ${int(event_type).hex()} ${file[index - 1]}')
-			return TrkData{}
+			return none
 		}
 	}
 	index++

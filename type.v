@@ -3,9 +3,9 @@ module vmidi
 type TrkData =
 	SequenceNumber | TextEvent | CopyrightNotice |
 	TrackName | InstrumentName | Lyrics | Marker |
-	CuePoint | MidiChannelPrefix | EndOfTrack |
-	SetTempo | SMPTEOffset | TimeSignature |
-	KeySignature | SequencerSpecific |
+	CuePoint | DeviceName | MidiChannelPrefix |
+	EndOfTrack | SetTempo | SMPTEOffset | 
+	TimeSignature | KeySignature | SequencerSpecific |
 	
 	SysEx |
 	

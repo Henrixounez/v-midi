@@ -1,9 +1,11 @@
 module vmidi
 
-fn read_track(file []byte, index int, chunk_size int) Track {
+fn read_track(file []byte, index int, chunk_size int) ?Track {
 	mut track := Track{}
 	mut index_track := index
 	mut divide_sysex := []byte{}
+	mut last_status := byte(0)
+
 	for index_track < index + chunk_size {
 		delta_time := get_variable_length_value(file, mut &index_track)
 		match file[index_track] {
@@ -14,17 +16,23 @@ fn read_track(file []byte, index int, chunk_size int) Track {
 				}
 			}
 			0xFF { // META EVENT
-				track.data << read_meta(file, mut &index_track, delta_time)
+				meta := read_meta(file, mut &index_track, delta_time) or {
+					return none
+				}
+				track.data << meta
 			}
 			else {
-				track.data << read_midi_event(file, mut &index_track, delta_time)
+				event := read_midi_event(file, mut &index_track, delta_time, mut &last_status) or {
+					return none
+				}
+				track.data << event
 			}
 		}
 	}
 	return track
 }
 
-fn read_chunks(file []byte) Midi {
+fn read_chunks(file []byte) ?Midi {
 	mut midi := Midi{}
 	mut index := 0
 	for index < file.len {
@@ -39,10 +47,14 @@ fn read_chunks(file []byte) Midi {
 				midi.time_division_ = byte_to_int(subarray(file, index + 4, index + 6))
 			}
 			'MTrk' {
-				midi.tracks << read_track(file, index, chunk_size)
+				track := read_track(file, index, chunk_size) or {
+					return none
+				}
+				midi.tracks << track
 			}
 			else {
 				println('Unknown chunk $chunk_name')
+				return none
 			}
 		}
 		index += chunk_size

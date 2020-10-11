@@ -33,6 +33,10 @@ struct CuePoint {
 	delta_time u64
 	text string
 }
+struct DeviceName {
+	delta_time u64
+	text string
+}
 struct MidiChannelPrefix {
 	delta_time u64
 	channel byte
@@ -69,7 +73,7 @@ struct SequencerSpecific {
 	data	[]byte
 }
 
-fn read_meta(file []byte, mut index_track &int, delta_time u64) TrkData {
+fn read_meta(file []byte, mut index_track &int, delta_time u64) ?TrkData {
 	mut index := (*index_track) + 1
 
 	meta_type := file[index]
@@ -128,11 +132,19 @@ fn read_meta(file []byte, mut index_track &int, delta_time u64) TrkData {
 				text: data.bytestr()
 			}
 		}
+		0x09 {
+			meta = DeviceName {
+				delta_time: delta_time
+				text: data.bytestr()
+			}
+		}
 		0x20 {
 			meta = MidiChannelPrefix {
 				delta_time: delta_time
 				channel: data[0]
 			}
+		}
+		0x21 { // Obsolete MIDI Port
 		}
 		0x2f {
 			meta = EndOfTrack {}
@@ -178,6 +190,7 @@ fn read_meta(file []byte, mut index_track &int, delta_time u64) TrkData {
 		}
 		else {
 			println('UNKNOWN META ${meta_type.hex()}')
+			// return none
 		}
 	}
 	(*index_track) = index
