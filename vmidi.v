@@ -2,7 +2,7 @@ module vmidi
 
 import os
 
-pub fn (mut midi Midi)time_division() {
+fn (mut midi Midi)time_division() {
 	mut mpqn := 500000
 	mut tick := 0
 
@@ -41,7 +41,7 @@ pub fn parse(filename string) ?Midi {
 	return midi
 }
 
-pub fn (data TrkData) is_event() bool {
+fn (data TrkData) is_event() bool {
 	if data is NoteOff ||
 	   data is NoteOn ||
 	   data is NoteAftertouch ||
