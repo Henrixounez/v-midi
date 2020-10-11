@@ -20,14 +20,16 @@ type Meta = SequenceNumber | TextEvent | CopyrightNotice |
 
 struct Track {
 pub mut:
-	tempo 	int = 120
+	nb int
 	data	[]TrkData
 }
 
 struct Midi {
+mut:
+	time_division_ int
 pub mut:
 	format_type int
 	number_tracks int
-	time_division int
 	tracks []Track
+	micros_per_tick int
 }

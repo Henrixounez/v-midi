@@ -111,7 +111,8 @@ fn read_midi_event(file []byte, mut index_track &int, delta_time u64) TrkData {
 			}
 		}
 		else {
-			println('UNKNOWN EVENT: ${int(event_type).hex()}')
+			println('UNKNOWN EVENT: ${int(event_type).hex()} ${file[index - 1]}')
+			return TrkData{}
 		}
 	}
 	index++

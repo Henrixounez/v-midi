@@ -36,7 +36,7 @@ fn read_chunks(file []byte) Midi {
 			'MThd' {
 				midi.format_type = byte_to_int(subarray(file, index, index + 2))
 				midi.number_tracks = byte_to_int(subarray(file, index + 2, index + 4))
-				midi.time_division = byte_to_int(subarray(file, index + 4, index + 6))
+				midi.time_division_ = byte_to_int(subarray(file, index + 4, index + 6))
 			}
 			'MTrk' {
 				midi.tracks << read_track(file, index, chunk_size)
