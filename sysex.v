@@ -13,7 +13,9 @@ fn read_sysex(file []byte, mut index_track &int, delta_time u64, mut divide_syse
 	length := get_variable_length_value(file, mut &index)
 	data := subarray(file, index, index + int(length))
 
-	divide_sysex.push_many(data, data.len)
+	unsafe {
+		divide_sysex.push_many(data, data.len)
+	}
 	if data[data.len - 1] != 0xF7 {
 		return SysEx {
 			data: []byte{}

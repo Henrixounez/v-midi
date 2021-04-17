@@ -24,7 +24,7 @@ fn get_variable_length_value(bytes []byte, mut shift_index &int) u64 {
 	return value
 }
 
-fn subarray(arr []byte, start, end int) []byte {
+fn subarray(arr []byte, start int, end int) []byte {
 	mut res := []byte{len: end - start}
 	for i in 0 .. (end - start) {
 		res[i] = arr[start + i]

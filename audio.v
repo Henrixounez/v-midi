@@ -40,7 +40,7 @@ mut:
 	t     f32
 }
 
-pub fn (mut ctx Context) play(freq, volume f32) {
+pub fn (mut ctx Context) play(freq f32, volume f32) {
 	ctx.notes << Note{ freq, volume, 0, false }
 }
 
@@ -69,7 +69,7 @@ fn clamp(x f64, lowerlimit f64, upperlimit f64) f64 {
 	return x
 }
 
-fn audio_cb(mut buffer &f32, num_frames, num_channels int, mut ctx Context) {
+fn audio_cb(mut buffer &f32, num_frames int, num_channels int, mut ctx Context) {
     mut mc := f32(0.0)
     frame_ms := 1.0 / f32(saudio.sample_rate())
     unsafe {

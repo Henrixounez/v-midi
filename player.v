@@ -12,7 +12,7 @@ fn (track Track)play(mut ctx audio.Context, mut wg sync.WaitGroup, micros_per_ti
 				NoteOn {
 					note := f32(440 * math.pow(2, (f32(event.note) - 69) / 12))
 					sleep := event.delta_time * u64(micros_per_tick)
-					time.sleep_ms(int(sleep / 1000))
+					time.sleep(int(sleep) * time.millisecond)
 					if event.velocity != 0 {
 						ctx.play(note, 0.2)
 					} else {
@@ -22,7 +22,7 @@ fn (track Track)play(mut ctx audio.Context, mut wg sync.WaitGroup, micros_per_ti
 				NoteOff {
 					note := f32(440 * math.pow(2, (f32(event.note) - 69) / 12))
 					sleep := event.delta_time * u64(micros_per_tick)
-					time.sleep_ms(int(sleep / 1000))
+					time.sleep(int(sleep) * time.millisecond)
 					ctx.pause(note)
 				}
 				else {}
